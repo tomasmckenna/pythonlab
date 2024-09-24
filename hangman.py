@@ -8,7 +8,7 @@ Spelet fortsätter tills spelaren har gissat hela ordet eller har gjort tillräc
 """
 import random
 def main():
-    word_list = ["banana", "apple", "orange", "pineapple"]
+    word_list = ["banana", "apple", "orange", "pineapple", "grapefruit", "cherry"]
     word = random.choice(word_list)
     print (f"{len(word)}")
     word_unique = set(word)
