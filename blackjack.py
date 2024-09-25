@@ -10,20 +10,20 @@ Datorn måste ta kort så länge summan av korten är mindre än 17 poäng
 Om datorn går över 21 poäng vinner spelaren oavsett vilka kort spelaren har.
 Om varken spelaren eller datorn går över 21 poäng så vinner den som har högst kortsumma.
  """
+from random import shuffle
+
 def main():
 
     class Card:
         suits = {'c': '♣','d': '♦','h': '♥','s': '♠'}
-        
         def __init__(self, rank, suit):
             self.rank = rank
             self.suit = suit
 
         def show(self):
-            print (f"The {self.rank} of {Card.suits[self.suit]}")
+            print (f"{self.rank} of {Card.suits[self.suit]}")
 
     class Deck:
-
         def __init__(self):
             self.cards = []
             self.build()
@@ -32,11 +32,33 @@ def main():
             for s in ["c","d","h","s"]:
                 for c in range(1,14):
                     self.cards.append(Card(c,s))
+            shuffle(self.cards)
+
+        def draw_card(self):
+            return self.cards.pop() 
+
         def show(self):
             for card in self.cards:
                 card.show()
-    adeck = Deck()
-    adeck.show()
 
+    class Player:
+        def __init__(self, name):
+            self.hand = []
+            self.name = name
+
+        def draw(self, deck):
+            self.hand.append(deck.draw_card())
+            return self
+        
+        def showhand(self):
+            for card in self.hand:
+                card.show()
+
+    adeck = Deck()
+    print("Dealer draws a ...")
+    dealer = Player("Dealer")
+    dealer.draw(adeck).draw(adeck)
+    dealers_hand = dealer.showhand()
+    print(f"{dealers_hand}")
 if __name__ == "__main__":
     main()
