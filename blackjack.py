@@ -11,6 +11,7 @@ Om datorn går över 21 poäng vinner spelaren oavsett vilka kort spelaren har.
 Om varken spelaren eller datorn går över 21 poäng så vinner den som har högst kortsumma.
  """
 def main():
+
     class Card:
         suits = {'c': '♣','d': '♦','h': '♥','s': '♠'}
         
@@ -20,8 +21,22 @@ def main():
 
         def show(self):
             print (f"The {self.rank} of {Card.suits[self.suit]}")
-    acard = Card(1, 's')
-    acard.show()
+
+    class Deck:
+
+        def __init__(self):
+            self.cards = []
+            self.build()
+
+        def build(self):
+            for s in ["c","d","h","s"]:
+                for c in range(1,14):
+                    self.cards.append(Card(c,s))
+        def show(self):
+            for card in self.cards:
+                card.show()
+    adeck = Deck()
+    adeck.show()
 
 if __name__ == "__main__":
     main()
