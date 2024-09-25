@@ -10,8 +10,18 @@ Datorn måste ta kort så länge summan av korten är mindre än 17 poäng
 Om datorn går över 21 poäng vinner spelaren oavsett vilka kort spelaren har.
 Om varken spelaren eller datorn går över 21 poäng så vinner den som har högst kortsumma.
  """
+def main():
+    class Card:
+        suits = {'c': '♣','d': '♦','h': '♥','s': '♠'}
+        
+        def __init__(self, rank, suit):
+            self.rank = rank
+            self.suit = suit
 
- def main():
+        def show(self):
+            print (f"The {self.rank} of {Card.suits[self.suit]}")
+    acard = Card(1, 's')
+    acard.show()
 
 if __name__ == "__main__":
     main()
