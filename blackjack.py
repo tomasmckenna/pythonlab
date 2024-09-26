@@ -58,7 +58,7 @@ def main():
             return self
         
         def showhand(self):
-            if self.name == "Dealer":
+            if self.name == "Dealer": # and game == "True":
                     self.hand[0].show()
             else:
                 for card in self.hand:
@@ -97,6 +97,13 @@ def main():
         if tomas.total() > 21:
             print("You're bust!")
             game = False
+        if play == "s":
+            dealer.draw(adeck)
+            dealer.showhand()
+        if dealer.total() > 21:
+            print (f"Dealer's hand is {dealer.total()}, you win!")
+            game = False
+
 
 if __name__ == "__main__":
     main()
