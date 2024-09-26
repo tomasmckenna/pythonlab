@@ -57,9 +57,10 @@ def main():
             self.hand.append(deck.draw_card())
             return self
         
-        def showhand(self, game):
-            if self.name == "Dealer" and game == True:
-                    self.hand[0].show()
+        def showhand(self, show_all=False):
+            if self.name == "Dealer" and show_all == False:
+                print("Dealer's hidden card: ")
+                self.hand[0].show()
             else:
                 for card in self.hand:
                     card.show()
@@ -73,43 +74,58 @@ def main():
             while total >21 and aces:
                 total -= 10
                 aces -= 1
-            return total                
-    game = True
-    adeck = Deck()
-    print("The dealer draws a hidden card and a ...")
-    dealer = Player("Dealer")
-    dealer.draw(adeck).draw(adeck)
-    dealer.showhand(game=True)
+            return total           
+    def dealer_turn(dealer, deck):
+        print("Dealer's turn: ")
+        dealer.showhand(show_all=True)
+        while dealer.total() < 17:
+            print(f"Dealer's hand: {dealer.total()}. Dealer draws a...")
+            dealer.draw(deck)
+            dealer.showhand(show_all=True)
+        print(f"Dealer's final hand is {dealer.total()}")
 
+    adeck = Deck()
     tomas = Player("Tomas")
-    print("You draw ...")
+    dealer = Player("Dealer")
+
+    dealer.draw(adeck).draw(adeck)
     tomas.draw(adeck).draw(adeck)
-    tomas.showhand(game=True)
+
+    print("The dealer draws a hidden card and a ...")
+    dealer.showhand(show_all = False)
+
+    print("You draw ...")
+    tomas.showhand()
     print (f"Your hand is {tomas.total()}")
 
-    while game == True:
+    while True:
+        if tomas.total() > 21:
+            print("You're bust!")
+            return
+
         play = input("Hit(h) or Stand(s)?: ")
         if play == "h":
             tomas.draw(adeck)
-            tomas.showhand(game=True)
+            print("You draw ...")
+            tomas.showhand()
             print (f"Your hand is {tomas.total()}")
-        if tomas.total() > 21:
-            print("You're bust!")
-            game = False
-        if play == "s" and dealer.total() < tomas.total():
-            dealer.draw(adeck)
-            dealer.showhand(game=False)
-            print (f"Dealer's hand is {dealer.total()}")
-        if dealer.total() > 21:
-            print (f"Dealer's hand is {dealer.total()}, you win!")
-            game = False
-        if dealer.total() > 17:
-            dealer.draw(adeck)
-        if dealer.total() < tomas.total():
-            print (f"Your hand is {tomas.total()} and Dealer's hand is {dealer.total()}, you win!")
-            game = False
-        if dealer.total() == tomas.total():
-            print(f"It's a draw!")
-            game = False
+        elif play == "s":
+            break
+ 
+    dealer_turn(dealer, adeck)
+    
+    tomas_score = tomas.total()
+    daeler_score = dealer.total()
+        
+    if dealer.total() > 21:
+        print (f"Dealer's hand is {dealer.total()}, you win!")
+        return
+    if dealer.total() < tomas.total():
+        print (f"Your hand is {tomas.total()} and Dealer's hand is {dealer.total()}, you win!")
+    if dealer.total() > tomas.total():
+        print (f"Your hand is {tomas.total()} and Dealer's hand is {dealer.total()}, you lose!")
+    if dealer.total() == tomas.total():
+        print(f"It's a draw!")
+        
 if __name__ == "__main__":
     main()
