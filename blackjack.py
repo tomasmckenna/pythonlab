@@ -16,12 +16,17 @@ def main():
 
     class Card:
         suits = {'c': '♣','d': '♦','h': '♥','s': '♠'}
+        values = {"2": 2, "3": 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
+                  'Jack': 10, 'Queen': 10, 'King': 10, 'Ace': 11}
         def __init__(self, rank, suit):
             self.rank = rank
             self.suit = suit
 
         def show(self):
             print (f"{self.rank} of {Card.suits[self.suit]}")
+
+        def value(self):
+            return Card.values[str(self.rank)]
 
     class Deck:
         def __init__(self):
@@ -30,8 +35,10 @@ def main():
 
         def build(self):
             for s in ["c","d","h","s"]:
-                for c in range(1,14):
-                    self.cards.append(Card(c,s))
+                for c in range(2,11):
+                    self.cards.append(Card(str(c),s))
+                for f in ["Jack","Queen","King","Ace"]:
+                    self.cards.append(Card(f,s))
             shuffle(self.cards)
 
         def draw_card(self):
@@ -51,14 +58,45 @@ def main():
             return self
         
         def showhand(self):
+            if self.name == "Dealer":
+                    self.hand[0].show()
+            else:
+                for card in self.hand:
+                    card.show()
+        def total(self):
+            total = 0
+            aces = 0
             for card in self.hand:
-                card.show()
+                total += card.value()
+                if card.rank == "Ace":
+                    aces += 1
+            while total >21 and aces:
+                total -+ 10
+                aces -= 1
+            return total                
 
     adeck = Deck()
     print("Dealer draws a ...")
     dealer = Player("Dealer")
     dealer.draw(adeck).draw(adeck)
-    dealers_hand = dealer.showhand()
-    print(f"{dealers_hand}")
+    dealer.showhand()
+
+    tomas = Player("Tomas")
+    print("You draw ...")
+    tomas.draw(adeck).draw(adeck)
+    tomas.showhand()
+    print (f"Your hand is {tomas.total()}")
+
+    game = True
+    while game == True:
+        play = input("Hit(h) or or Stand(s)?: ")
+        if play == "h":
+            tomas.draw(adeck)
+            tomas.showhand()
+            print (f"Your hand is {tomas.total()}")
+        if tomas.total() > 21:
+            print("You're bust!")
+            game = False
+
 if __name__ == "__main__":
     main()
