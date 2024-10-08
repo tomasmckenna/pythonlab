@@ -12,70 +12,71 @@ Om varken spelaren eller datorn går över 21 poäng så vinner den som har hög
  """
 from random import shuffle
 
-def main():
+class Card:
+    suits = {'c': '♣','d': '♦','h': '♥','s': '♠'}
+    values = {
+        "2": 2, "3": 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
+                'Jack': 10, 'Queen': 10, 'King': 10, 'Ace': 11
+    }
 
-    class Card:
-        suits = {'c': '♣','d': '♦','h': '♥','s': '♠'}
-        values = {"2": 2, "3": 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10,
-                  'Jack': 10, 'Queen': 10, 'King': 10, 'Ace': 11}
-        def __init__(self, rank, suit):
-            self.rank = rank
-            self.suit = suit
+    def __init__(self, rank, suit):
+        self.rank = rank
+        self.suit = suit
 
-        def show(self):
-            print (f"{self.rank} of {Card.suits[self.suit]}")
+    def __str__(self):
+        return f"{self.rank} of {Card.suits[self.suit]}"
 
-        def value(self):
-            return Card.values[str(self.rank)]
+    def value(self):
+        return Card.values[str(self.rank)]
 
-    class Deck:
-        def __init__(self):
-            self.cards = []
-            self.build()
+class Deck:
+    def __init__(self):
+        self.cards = []
+        self.build()
 
-        def build(self):
-            for s in ["c","d","h","s"]:
-                for c in range(2,11):
-                    self.cards.append(Card(str(c),s))
-                for f in ["Jack","Queen","King","Ace"]:
-                    self.cards.append(Card(f,s))
-            shuffle(self.cards)
+    def build(self):
+        for s in Card.suits.keys():
+            for c in range(2,11):
+                self.cards.append(Card(str(c),s))
+            for f in ["Jack","Queen","King","Ace"]:
+                self.cards.append(Card(f,s))
+        shuffle(self.cards)
 
-        def draw_card(self):
-            return self.cards.pop() 
+    def draw_card(self):
+        return self.cards.pop() 
 
-        def show(self):
-            for card in self.cards:
-                card.show()
+    def show(self):
+        for card in self.cards:
+            print(card)
 
-    class Player:
-        def __init__(self, name):
-            self.hand = []
-            self.name = name
+class Player:
+    def __init__(self, name):
+        self.hand = []
+        self.name = name
 
-        def draw(self, deck):
-            self.hand.append(deck.draw_card())
-            return self
-        
-        def showhand(self, show_all=False):
-            if self.name == "Dealer" and show_all == False:
-                print("Dealer's hidden card: ")
-                self.hand[0].show()
-            else:
-                for card in self.hand:
-                    card.show()
-        def total(self):
-            total = 0
-            aces = 0
+    def draw(self, deck):
+        self.hand.append(deck.draw_card())
+    
+    def showhand(self, show_all=False):
+        if self.name == "Dealer" and not show_all:
+            print("Dealer's hidden card: ")
+            print(self.hand[0])
+        else:
             for card in self.hand:
-                total += card.value()
-                if card.rank == "Ace":
-                    aces += 1
-            while total >21 and aces:
-                total -= 10
-                aces -= 1
-            return total           
-    def dealer_turn(dealer, deck):
+                print(card)
+    def total(self):
+        total = sum(card.value() for card in self.hand)
+        aces = sum(1 for card in self.hand if card.rank == 'Ace')
+        #for card in self.hand:
+        #    total += card.value()
+        #    if card.rank == "Ace":
+        #        aces += 1
+        while total >21 and aces:
+            total -= 10
+            aces -= 1
+        return total   
+
+def dealer_turn(dealer, deck):
         print("Dealer's turn: ")
         dealer.showhand(show_all=True)
         while dealer.total() < 17:
@@ -84,12 +85,16 @@ def main():
             dealer.showhand(show_all=True)
         print(f"Dealer's final hand is {dealer.total()}")
 
+def main():
+
     adeck = Deck()
     tomas = Player("Tomas")
     dealer = Player("Dealer")
 
-    dealer.draw(adeck).draw(adeck)
-    tomas.draw(adeck).draw(adeck)
+    dealer.draw(adeck)
+    dealer.draw(adeck)
+    tomas.draw(adeck)
+    tomas.draw(adeck)
 
     print("The dealer draws a hidden card and a ...")
     dealer.showhand(show_all = False)
